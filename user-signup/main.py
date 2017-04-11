@@ -34,7 +34,24 @@ e_mail = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
 def valid_email(email):
     return e_mail.match(email)
 
-page_header = """
+#page_header = """
+#<!DOCTYPE html>
+#<html>
+#<head>
+    #<title>Signup</title>
+#</head>
+#<body>
+    #<h1>
+        #<a href="/">Signup</a>
+    #</h1>
+#"""
+
+#page_footer = """
+#</body>
+#</html>
+#"""
+
+table_form = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -44,143 +61,187 @@ page_header = """
     <h1>
         <a href="/">Signup</a>
     </h1>
-"""
 
-page_footer = """
+<form action='/signup-verification' method="post">
+<tbody>
+    <tr>
+        <td>
+            <label for = "username">Username</label>
+        </td>
+        <td>
+            <input type="text" name="username" value="%(username)s" required/><div style="color: red">%(username_error_message)s</div>
+        </td>
+    </tr>
+    <br>
+
+    <tr>
+        <td>
+            <label for = "password">Password</label>
+        </td>
+        <td>
+            <input type="password" name="password" required/><div></div>
+            <span class="error"></span>
+        </td>
+    </tr>
+    <br>
+
+    <tr>
+        <td>
+            <label for = "verify_password">Verify Password</label>
+        </td>
+        <td>
+            <input type="password" name="verify_password" required/><div style="color: red">%(password_error_message)s</div>
+            <span class="error"></span>
+        </td>
+    </tr>
+    <br>
+
+    <tr>
+        <td>
+            <label for = "email">Email (optional)</label>
+        </td>
+        <td>
+            <input type="text" name="email" value="%(email)s" required/><div style="color: red">%(email_error_message)s</div>
+            <span class="error"></span>
+        </td>
+    </tr>
+    <br>
+
+    <input type = "submit"/>
+</form>
 </body>
 </html>
 """
 
 class Index(webapp2.RequestHandler):
+
+    def generate_form(self, username_error_message="", password_error_message="", email_error_message="", username="", password="", verify_password="", email=""):
+        self.response.write(table_form % {"username_error_message": username_error_message,
+                                    "password_error_message": password_error_message,
+                                    "email_error_message": email_error_message,
+                                    "username": username,
+                                    "password": password,
+                                    "verify_password": verify_password,
+                                    "email": email})
+
     def get(self):
-        edit_header = "<h1>Signup</h1>"
-
-        table_form = """
-        <form action='/signup-verification' method="post">
-        <tbody>
-            <tr>
-                <td>
-                    <label for = "username">Username</label>
-                </td>
-                <td>
-                    <input type="text" name="username" value required/>
-                    <span class="error"></span>
-                </td>
-            </tr>
-            <br>
-
-            <tr>
-                <td>
-                    <label for = "password">Password</label>
-                </td>
-                <td>
-                    <input type="password" name="password" required/>
-                    <span class="error"></span>
-                </td>
-            </tr>
-            <br>
-
-            <tr>
-                <td>
-                    <label for = "verify_password">Verify Password</label>
-                </td>
-                <td>
-                    <input type="password" name="verify_password" required/>
-                    <span class="error"></span>
-                </td>
-            </tr>
-            <br>
-
-            <tr>
-                <td>
-                    <label for = "email">Email (optional)</label>
-                </td>
-                <td>
-                    <input type="text" name="email" required/>
-                    <span class="error"></span>
-                </td>
-            </tr>
-            <br>
-
-            <input type = "submit"/>
-            </form>
-            """
-
-        error = self.request.get("error")
-
-        username = self.request.get("username")
-        password = self.request.get("password")
-        verify_password = self.request.get("verify_password")
-        email = self.request.get("email")
-
-        if error:
-            error_esc = cgi.escape(error, quote=True)
-            error_element = '<p class="error">' + error_esc + '</p>'
-        elif username:
-            error_esc = cgi.escape(username, quote=True)
-            error_element = '<p class="error">' + error_esc + '</p>'
-        elif password:
-            error_esc = cgi.escape(password, quote=True)
-            error_element = '<p class="error">' + error_esc + '</p>'
-        elif email:
-            error_esc = cgi.escape(username, quote=True)
-            error_element = '<p class="error">' + error_esc + '</p>'
-        else:
-            error_element = ''
+        self.generate_form()
 
 
-        content = table_form + error_element
-        self.response.write(edit_header + content)
+        #error = self.request.get("error")
+
+        #username = self.request.get("username")
+        #password = self.request.get("password")
+        #verify_password = self.request.get("verify_password")
+        #email = self.request.get("email")
+
+        #if error:
+            #error_esc = cgi.escape(error, quote=True)
+            #error_element = '<p class="error">' + error_esc + '</p>'
+        #elif username:
+            #error_esc = cgi.escape(username, quote=True)
+            #error_element = '<p class="error">' + error_esc + '</p>'
+        #elif password:
+            #error_esc = cgi.escape(password, quote=True)
+            #error_element = '<p class="error">' + error_esc + '</p>'
+        #elif email:
+            #error_esc = cgi.escape(username, quote=True)
+            #error_element = '<p class="error">' + error_esc + '</p>'
+        #else:
+            #error_element = ''
+
 
 
 class Signup_Verification(webapp2.RequestHandler):
+    def generate_form(self, username_error_message="", password_error_message="", email_error_message="", username="", password="", verify_password="", email=""):
+        self.response.write(table_form % {"username_error_message": username_error_message,
+                                    "password_error_message": password_error_message,
+                                    "email_error_message": email_error_message,
+                                    "username": username,
+                                    "password": password,
+                                    "verify_password": verify_password,
+                                    "email": email})
+
     def post(self):
-        entered_username = self.request.get("username")
-        entered_password = self.request.get("password")
-        entered_password2 = self.request.get("verify_password")
-        entered_email = self.request.get("email")
+
+
+        user_username = self.request.get('username')
+        user_password = self.request.get('password')
+        user_verify_password = self.request.get('verify_password')
+        user_email = self.request.get('email')
+
+
+        username = valid_username(user_username)
+        email = valid_email(user_email)
+
+        username_error_message = "Please enter a valid username."
+        password_error_message = "Please ensure your passwords match."
+        email_error_message = "Please enter a valid email."
+
+        if (not username) and (user_password != user_verify_password) and (not email):
+            self.generate_form(username_error_message = username_error_message, password_error_message = password_error_message, email_error_message = email_error_message,
+                               username=user_username, password=user_password, email=user_email)
+
+        elif (not username) and (user_password != user_verify_password):
+            self.generate_form(username_error_message = username_error_message, password_error_message=password_error_message,
+                                username=user_username)
+
+        elif (user_password != user_verify_password) and (not email):
+            self.generate_form(password_error_message = password_error_message, email_error_message = email_error_message,
+                                email=user_email)
+
+        elif (not username) and (not email):
+            self.generate_form(username_error_message = username_error_message, email_error_message = email_error_message,
+                                username=user_username, email=user_email)
+
+        elif not username:
+            self.generate_form(username_error_message = username_error_message, username=user_username)
+
+        elif (user_password != user_verify_password):
+            self.generate_form(password_error_message = password_error_message)
+
+        elif not email:
+            self.generate_form(email_error_message = email_error_message, email=user_email)
+
+        else:
+            self.response.write("Welcome, " + user_username + "!")
+
+    #def post(self):
+        #entered_username = self.request.get("username")
+        #entered_password = self.request.get("password")
+        #entered_password2 = self.request.get("verify_password")
+        #entered_email = self.request.get("email")
 
         #validating username input - blank username
-        if entered_username == "":
-            error = "Please enter a username!"
-            self.redirect("/?error=Please enter a username!")
+        #if entered_username == "":
+            #error = "Please enter a username!"
+            #self.redirect("/?error=Please enter a username!")
 
         #validating username input - username contains prohibited characters
-        validated_username = valid_username(entered_username)
-        if not validated_username:
-            error = "Please enter a valid username!"
-            self.redirect("/?error=Please enter a valid username!")
+        #validated_username = valid_username(entered_username)
+        #if not validated_username:
+            #error = "Please enter a valid username!"
+            #self.redirect("/?error=Please enter a valid username!")
 
         #validating password and verify_password user inputs - entered passwords do not match
-        if entered_password != entered_password2:
-            error = "Your passwords do not match!"
-            self.redirect("/?error=Your passwords do not match!")
+        #if entered_password != entered_password2:
+            #error = "Your passwords do not match!"
+            #self.redirect("/?error=Your passwords do not match!")
 
         #validating email input - email contains prohibited characters
-        validated_email = valid_email(entered_email)
-        if not validated_email:
-            error = "Please enter a valid email!"
-            self.redirect("/?error=Please enter a valid email!")
+        #validated_email = valid_email(entered_email)
+        #if not validated_email:
+            #error = "Please enter a valid email!"
+            #self.redirect("/?error=Please enter a valid email!")
 
         #else:
             #self.redirect("/?welcome")
 
 
-        content = page_header + "<p>" + "Welcome, " + entered_username + "!" + "</p>" + page_footer
-        self.response.write(content)
-
-#Do I need the following class given I am printing the desired content above?
-class Welcome(webapp2.RequestHandler):
-    def post(self):
-        validated_username = self.request.get("username")
-        escaped_username = cgi.escape(validated_username, quote=True)
-        welcome_message = "Welcome, " + escaped_username + "!"
-
-        content = page_header + "<p>" + welcome_message + "</p>" + page_footer
-        self.response.write(welcome_message)
+        #content = page_header + "<p>" + "Welcome, " + entered_username + "!" + "</p>" + page_footer
+        #self.response.write(content)
 
 app = webapp2.WSGIApplication([
     ('/', Index),
-    ('/signup-verification', Signup_Verification),
-    ('/welcome', Welcome)],
+    ('/signup-verification', Signup_Verification)],
     debug=True)
